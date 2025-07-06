@@ -11,6 +11,7 @@
     <modules>
         <module>chatroom</module>
         <module>basic</module>
+        <module>qrpc</module>
     </modules>
 
     <properties>
