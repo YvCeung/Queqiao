@@ -9,23 +9,26 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
+
+import java.nio.charset.Charset;
 
 import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
 
 
 /**
- * @Description 演示接受的请求行和请求头
+ * @Description 上个例子中只能接受到请求行和请求头，这个例子演示下接收到的请求体的内容
  * @Author zy
  * @Date 2025/7/6 16:10
  **/
 @Slf4j
-public class HttpServer {
+public class HttpServerContent {
     public static void main(String[] args) {
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
@@ -41,15 +44,16 @@ public class HttpServer {
                         //加入入站消息读处理器
 
                         // 使用SimpleChannelInboundHandler，通过泛型控制我只感兴趣的消息类型，只有是这样的，才会进入处理逻辑
-                        sc.pipeline().addLast(new SimpleChannelInboundHandler<HttpRequest>() {
+                        sc.pipeline().addLast(new SimpleChannelInboundHandler<HttpContent>() {
                             @Override
-                            protected void channelRead0(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception {
-                                // 获取请求
-                                log.debug(httpRequest.uri());
+                            protected void channelRead0(ChannelHandlerContext channelHandlerContext, HttpContent msg) throws Exception {
+
+                                String content = msg.content().toString(Charset.defaultCharset());
+                                log.debug("接收到的请求体的内容为 : {}", content);
 
                                 // 返回响应
                                 DefaultFullHttpResponse response =
-                                        new DefaultFullHttpResponse(httpRequest.protocolVersion(), HttpResponseStatus.OK);
+                                        new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
 
                                 byte[] bytes = "<h1>Hello, world</h1>".getBytes();
                                 response.content().writeBytes(bytes);
@@ -60,24 +64,6 @@ public class HttpServer {
                             }
                         });
 
-                        /**
-                         * 传统的处理方式
-                        sc.pipeline().addLast(new ChannelInboundHandlerAdapter(){
-                            @Override
-                            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                // 通过日志可以看到，虽然只发送了一次请求，但是到了netty这边却解析成了两个部分，所以得需要针对不同类型
-                                // 做不同的处理
-                                log.debug("{}", msg.getClass());
-
-                                // 即： 请求行和请求头
-                                if(msg instanceof HttpRequest){
-
-                                // 请求体
-                                }else if(msg instanceof HttpContent){
-
-                                }
-                            }
-                        });*/
                     }
                 });
 
