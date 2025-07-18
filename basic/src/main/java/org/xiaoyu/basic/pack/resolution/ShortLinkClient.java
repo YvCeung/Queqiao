@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 采用短链接的方式进行解决
  * 发一个包建立一次连接，这样连接建立到连接断开之间就是消息的边界，缺点效率太低(只要连接断开了，缓冲区是一定会把数据交给服务器的程序处理的)
+ * 对应服务端的启动类为：org.xiaoyu.basic.pack.stick.StickServer
  */
 @Slf4j
 public class ShortLinkClient {
