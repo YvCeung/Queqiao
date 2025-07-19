@@ -1,8 +1,9 @@
 package org.xiaoyu.basic.protocol.custom;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageCodec;
+import io.netty.handler.codec.MessageToMessageCodec;
 import lombok.extern.slf4j.Slf4j;
 import org.xiaoyu.basic.protocol.message.Message;
 
@@ -14,20 +15,14 @@ import java.util.List;
 
 /**
  * @Description 这是一个演示自定义协议进行解码编码的case
- * 无状态可以被共享，因为没有去存储数据供其他地方使用，但是不能加@Sharable注解，因为ByteToMessageCodec是netty提供的一个不支持Sharable注解
- * 如下：
-     ByteToMessageCodec
-     * protected ByteToMessageCodec(boolean preferDirect) {
-     *         this.decoder = new NamelessClass_1();
-     *         this.ensureNotSharable();
-     *         this.outboundMsgMatcher = TypeParameterMatcher.find(this, ByteToMessageCodec.class, "I");
-     *         this.encoder = new Encoder(preferDirect);
-     *     }
  * @Author zy
  * @Date 2025/7/6 17:42
+ *
+ * 必须结合LengthFieldBasedFrameDecoder一起使用，确保接收到的消息是完整的
  **/
 @Slf4j
-public class MessageCodec extends ByteToMessageCodec<Message> {
+@ChannelHandler.Sharable
+public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message> {
 
     /**
      * encode这个方法，会在出站的时候被调用。下面演示的这些步骤，是业界通用的协议设计步骤。包含：
@@ -41,11 +36,12 @@ public class MessageCodec extends ByteToMessageCodec<Message> {
      *
      * @param ctx
      * @param msg
-     * @param out 是由netty已经创建好的，我们只需要按照自定义协议的格式，将message转换成byteBuf就可以
      * @throws Exception
      */
     @Override
-    protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> outList) throws Exception {
+        ByteBuf out = ctx.alloc().buffer();
+
         // 1. 4 字节的魔数
         out.writeBytes(new byte[]{1, 2, 3, 4});
         // 2. 1 字节的版本,
@@ -67,6 +63,8 @@ public class MessageCodec extends ByteToMessageCodec<Message> {
         out.writeInt(bytes.length);
         // 8. 写入内容
         out.writeBytes(bytes);
+
+        outList.add(out);
     }
 
     /**
