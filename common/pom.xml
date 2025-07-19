@@ -8,10 +8,10 @@
     </parent>
 
     <groupId>org.xiaoyu</groupId>
-    <artifactId>basic</artifactId>
+    <artifactId>common</artifactId>
     <packaging>jar</packaging>
 
-    <name>basic</name>
+    <name>common</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -20,20 +20,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.xiaoyu</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-
     </dependencies>
 </project>

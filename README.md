@@ -49,6 +49,7 @@ java -jar queqiao-client.jar
 
 ```bash
 queqiao/
+├── common/               # 公用模块
 ├── basic/               # Netty API 示例模块
 ├── chatroom/           # 聊天室示例模块
 ├── qrpc/                # RPC 框架实现模块
