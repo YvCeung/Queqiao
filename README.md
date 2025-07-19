@@ -15,18 +15,19 @@
 ### ✅ 已完成
 
 * [x] 搭建基础项目结构
+* [x] 消息编解码与协议设计
 * [x] 学习并实现 Netty 的基本 Server / Client 通信
 
 ### 🛠️ 开发中
 
 * [ ] 聊天室应用（支持群聊和私聊）
-* [ ] 消息编解码与协议设计
+
 * [ ] 简单的 RPC 调用框架
 * [ ] 服务注册与发现机制（未来扩展）
 
 ## 技术栈
 
-* Java 21
+* Java 8
 * Netty 4.x
 * Maven
 * JUnit（单元测试）
@@ -48,9 +49,9 @@ java -jar queqiao-client.jar
 
 ```bash
 queqiao/
-├── core/               # 网络通信核心模块
+├── basic/               # Netty API 示例模块
 ├── chatroom/           # 聊天室示例模块
-├── rpc/                # RPC 框架实现模块
+├── qrpc/                # RPC 框架实现模块
 └── docs/               # 学习笔记和设计文档
 ```
 
