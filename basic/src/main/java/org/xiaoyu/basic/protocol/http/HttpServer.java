@@ -37,6 +37,7 @@ public class HttpServer {
                     @Override
                     protected void initChannel(SocketChannel sc) throws Exception {
                         sc.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+                        // HttpServerCodec 专门用于解析http协议的一个codec
                         sc.pipeline().addLast(new HttpServerCodec());
                         //加入入站消息读处理器
 
