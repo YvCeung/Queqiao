@@ -21,6 +21,7 @@ import org.xiaoyu.queqiao.chatroom.protocol.MessageCodecSharable;
 public class ChatClient {
     public static void main(String[] args) {
         NioEventLoopGroup group = new NioEventLoopGroup();
+        // 无状态，抽取为成员变量
         MessageCodecSharable messageCodecSharable = new MessageCodecSharable();
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.DEBUG);
         try {
