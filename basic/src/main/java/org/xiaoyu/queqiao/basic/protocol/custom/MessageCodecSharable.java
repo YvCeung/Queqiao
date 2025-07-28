@@ -14,7 +14,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 /**
- * @Description 这是一个演示自定义协议进行解码编码的case
+ * @Description MessageToMessageCodec中的构造方法不会对@Sharable进行拦截
  * @Author zy
  * @Date 2025/7/6 17:42
  *
