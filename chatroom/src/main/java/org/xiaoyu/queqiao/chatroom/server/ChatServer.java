@@ -13,6 +13,7 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.xiaoyu.queqiao.chatroom.protocol.CustomProtocolFrameDecoder;
 import org.xiaoyu.queqiao.chatroom.protocol.MessageCodecSharable;
+import org.xiaoyu.queqiao.chatroom.server.handler.LoginRequestMsgHandler;
 import org.xiaoyu.queqiao.common.message.LoginRequestMessage;
 
 /**
@@ -26,6 +27,8 @@ public class ChatServer {
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.DEBUG);
         CustomProtocolFrameDecoder customProtocolFrameDecoder = new CustomProtocolFrameDecoder();
         MessageCodecSharable messageCodecSharable = new MessageCodecSharable();
+        LoginRequestMsgHandler loginRequestMsgHandler = new LoginRequestMsgHandler();
+
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
 
@@ -40,14 +43,7 @@ public class ChatServer {
                            sc.pipeline().addLast(customProtocolFrameDecoder);
                            sc.pipeline().addLast(loggingHandler);
                            sc.pipeline().addLast(messageCodecSharable);
-                           sc.pipeline().addLast(new SimpleChannelInboundHandler<LoginRequestMessage>() {
-                               @Override
-                               protected void channelRead0(ChannelHandlerContext channelHandlerContext, LoginRequestMessage loginRequestMessage) throws Exception {
-                                   String username = loginRequestMessage.getUsername();
-                                   String password = loginRequestMessage.getPassword();
-
-                               }
-                           });
+                           sc.pipeline().addLast(loginRequestMsgHandler);
 
                         }
                     });
@@ -56,6 +52,10 @@ public class ChatServer {
 
             // 返回一个 ChannelFuture，表示服务端 Channel 关闭时的未来事件。让主线程阻塞，等待 Netty 服务器关闭
             // 一旦某种逻辑调用了 channel.close()（比如优雅关闭服务），这行才会执行结束，整个程序退出。
+            // 当注释掉这行代码之后程序启动后很快就结束了
+            /**
+             * channel.closeFuture()  返回的是一个 ChannelFuture，这个 future 的作用是监听这个 Channel 什么时候关闭。
+             */
             channel.closeFuture().sync();
         } catch (InterruptedException e) {
             log.error("server error", e);
