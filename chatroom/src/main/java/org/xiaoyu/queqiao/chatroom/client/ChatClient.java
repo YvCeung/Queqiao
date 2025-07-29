@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.xiaoyu.queqiao.chatroom.protocol.CustomProtocolFrameDecoder;
 import org.xiaoyu.queqiao.chatroom.protocol.MessageCodecSharable;
 import org.xiaoyu.queqiao.common.message.ChatRequestMessage;
+import org.xiaoyu.queqiao.common.message.ChatResponseMessage;
 import org.xiaoyu.queqiao.common.message.GroupChatRequestMessage;
 import org.xiaoyu.queqiao.common.message.GroupCreateRequestMessage;
 import org.xiaoyu.queqiao.common.message.GroupJoinRequestMessage;
@@ -65,6 +66,9 @@ public class ChatClient {
                                 }
                                 // 唤醒 system in 线程
                                 WAIT_FOR_LOGIN.countDown();
+                            } else if (msg instanceof ChatResponseMessage){
+                                ChatResponseMessage response = (ChatResponseMessage) msg;
+                                System.out.println(response.getContent());
                             }
                         }
 

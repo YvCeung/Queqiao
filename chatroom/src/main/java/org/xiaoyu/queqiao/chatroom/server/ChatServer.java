@@ -11,6 +11,7 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.xiaoyu.queqiao.chatroom.protocol.CustomProtocolFrameDecoder;
 import org.xiaoyu.queqiao.chatroom.protocol.MessageCodecSharable;
+import org.xiaoyu.queqiao.chatroom.server.handler.ChatRequestMsgHandler;
 import org.xiaoyu.queqiao.chatroom.server.handler.LoginRequestMsgHandler;
 
 /**
@@ -22,9 +23,9 @@ import org.xiaoyu.queqiao.chatroom.server.handler.LoginRequestMsgHandler;
 public class ChatServer {
     public static void main(String[] args) throws InterruptedException {
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.DEBUG);
-        CustomProtocolFrameDecoder customProtocolFrameDecoder = new CustomProtocolFrameDecoder();
         MessageCodecSharable messageCodecSharable = new MessageCodecSharable();
         LoginRequestMsgHandler loginRequestMsgHandler = new LoginRequestMsgHandler();
+        ChatRequestMsgHandler chatRequestMsgHandler = new ChatRequestMsgHandler();
 
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
@@ -37,10 +38,11 @@ public class ChatServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel sc) throws Exception {
-                           sc.pipeline().addLast(customProtocolFrameDecoder);
+                           sc.pipeline().addLast(new CustomProtocolFrameDecoder());
                            sc.pipeline().addLast(loggingHandler);
                            sc.pipeline().addLast(messageCodecSharable);
                            sc.pipeline().addLast(loginRequestMsgHandler);
+                           sc.pipeline().addLast(chatRequestMsgHandler);
 
 
                         }

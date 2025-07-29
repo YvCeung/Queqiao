@@ -45,4 +45,10 @@ public interface ISessionManangeService {
      * @return channel
      */
     Channel getChannel(String username);
+
+    /**
+     * 供SPI使用
+     * @return 服务名称
+     */
+    String getServiceName();
 }

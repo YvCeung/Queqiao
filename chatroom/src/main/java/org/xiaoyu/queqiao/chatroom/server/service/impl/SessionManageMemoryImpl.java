@@ -44,4 +44,9 @@ public class SessionManageMemoryImpl implements ISessionManangeService {
     public Channel getChannel(String username) {
         return usernameChannelMap.get(username);
     }
+
+    @Override
+    public String getServiceName() {
+        return "SessionManageMemoryImpl";
+    }
 }
