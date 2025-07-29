@@ -1,6 +1,6 @@
 package org.xiaoyu.queqiao.chatroom.server.service.impl;
 
-import org.xiaoyu.queqiao.chatroom.server.service.IUserService;
+import org.xiaoyu.queqiao.common.service.IUserService;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

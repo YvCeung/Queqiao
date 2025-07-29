@@ -1,4 +1,4 @@
-package org.xiaoyu.queqiao.chatroom.server.service;
+package org.xiaoyu.queqiao.common.service;
 
 /**
  * @Description 用户服务
