@@ -2,9 +2,7 @@ package org.xiaoyu.queqiao.chatroom.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -14,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.xiaoyu.queqiao.chatroom.protocol.CustomProtocolFrameDecoder;
 import org.xiaoyu.queqiao.chatroom.protocol.MessageCodecSharable;
 import org.xiaoyu.queqiao.chatroom.server.handler.LoginRequestMsgHandler;
-import org.xiaoyu.queqiao.common.message.LoginRequestMessage;
 
 /**
  * @Description 聊天室服务端
@@ -44,6 +41,7 @@ public class ChatServer {
                            sc.pipeline().addLast(loggingHandler);
                            sc.pipeline().addLast(messageCodecSharable);
                            sc.pipeline().addLast(loginRequestMsgHandler);
+
 
                         }
                     });
