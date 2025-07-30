@@ -3,7 +3,7 @@ package org.xiaoyu.queqiao.chatroom.server.handler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.xiaoyu.queqiao.chatroom.server.factory.SessionManageServiceFactory;
+import org.xiaoyu.queqiao.chatroom.server.factory.SingleSessionManageServiceFactory;
 import org.xiaoyu.queqiao.chatroom.server.service.ISessionManangeService;
 import org.xiaoyu.queqiao.common.message.LoginRequestMessage;
 import org.xiaoyu.queqiao.common.message.LoginResponseMessage;
@@ -25,7 +25,7 @@ public class LoginRequestMsgHandler extends SimpleChannelInboundHandler<LoginReq
         boolean login = userService.login(username, password);
 
         if (login) {
-            ISessionManangeService sessionManageMemoryImpl = SessionManageServiceFactory.getSessionManageService("SessionManageMemoryImpl");
+            ISessionManangeService sessionManageMemoryImpl = SingleSessionManageServiceFactory.getSessionManageService("SessionManageMemoryImpl");
             // 绑定用户名和channel的关系，用于消息发送
             sessionManageMemoryImpl.bind(ctx.channel(), username);
             LoginResponseMessage loginResponseMessage = new LoginResponseMessage(true, null);

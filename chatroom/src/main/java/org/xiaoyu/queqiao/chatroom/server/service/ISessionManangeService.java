@@ -4,7 +4,7 @@ package org.xiaoyu.queqiao.chatroom.server.service;
 import io.netty.channel.Channel;
 
 /**
- * @Description 会话管理服务，用于聊天发送单聊、群聊
+ * @Description 会话管理服务，主要用于单个channel的管理
  * @Author zy
  * @Date 2025/7/29 22:06
  **/

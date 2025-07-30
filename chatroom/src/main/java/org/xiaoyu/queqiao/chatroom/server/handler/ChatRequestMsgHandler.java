@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.xiaoyu.queqiao.chatroom.server.factory.SessionManageServiceFactory;
+import org.xiaoyu.queqiao.chatroom.server.factory.SingleSessionManageServiceFactory;
 import org.xiaoyu.queqiao.chatroom.server.service.ISessionManangeService;
 import org.xiaoyu.queqiao.common.message.ChatRequestMessage;
 import org.xiaoyu.queqiao.common.message.ChatResponseMessage;
@@ -21,7 +21,7 @@ public class ChatRequestMsgHandler extends SimpleChannelInboundHandler<ChatReque
     protected void channelRead0(ChannelHandlerContext ctx, ChatRequestMessage chatRequestMessage) throws Exception {
         String to = chatRequestMessage.getTo();
 
-        ISessionManangeService sessionManageMemoryImpl = SessionManageServiceFactory.getSessionManageService("SessionManageMemoryImpl");
+        ISessionManangeService sessionManageMemoryImpl = SingleSessionManageServiceFactory.getSessionManageService("SessionManageMemoryImpl");
 
         // 获取接受人的channel
         Channel channel = sessionManageMemoryImpl.getChannel(to);

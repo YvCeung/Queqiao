@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.xiaoyu.queqiao.chatroom.protocol.CustomProtocolFrameDecoder;
 import org.xiaoyu.queqiao.chatroom.protocol.MessageCodecSharable;
 import org.xiaoyu.queqiao.chatroom.server.handler.ChatRequestMsgHandler;
+import org.xiaoyu.queqiao.chatroom.server.handler.GroupCreateRequestMsgHandler;
 import org.xiaoyu.queqiao.chatroom.server.handler.LoginRequestMsgHandler;
 
 /**
@@ -26,6 +27,7 @@ public class ChatServer {
         MessageCodecSharable messageCodecSharable = new MessageCodecSharable();
         LoginRequestMsgHandler loginRequestMsgHandler = new LoginRequestMsgHandler();
         ChatRequestMsgHandler chatRequestMsgHandler = new ChatRequestMsgHandler();
+        GroupCreateRequestMsgHandler groupCreateRequestMsgHandler = new GroupCreateRequestMsgHandler();
 
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
@@ -43,8 +45,7 @@ public class ChatServer {
                            sc.pipeline().addLast(messageCodecSharable);
                            sc.pipeline().addLast(loginRequestMsgHandler);
                            sc.pipeline().addLast(chatRequestMsgHandler);
-
-
+                           sc.pipeline().addLast(groupCreateRequestMsgHandler);
                         }
                     });
             // Netty 是异步的，bind() 会立刻返回一个 ChannelFuture，而 sync() 的作用是阻塞当前线程，直到端口绑定成功为止。
