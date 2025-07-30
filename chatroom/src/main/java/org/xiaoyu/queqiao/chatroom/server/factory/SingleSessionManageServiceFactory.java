@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @Description
+ * @Description 单会话服务工厂类
  * @Author zy
  * @Date 2025/7/29 22:41
  **/
-public class SessionManageServiceFactory {
+public class SingleSessionManageServiceFactory {
     private final static Map<String, ISessionManangeService> sessionManangeServiceMap = new ConcurrentHashMap<>();
 
 
