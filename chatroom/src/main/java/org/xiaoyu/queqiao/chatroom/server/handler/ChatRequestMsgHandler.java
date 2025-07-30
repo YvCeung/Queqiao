@@ -8,7 +8,6 @@ import org.xiaoyu.queqiao.chatroom.server.factory.SessionManageServiceFactory;
 import org.xiaoyu.queqiao.chatroom.server.service.ISessionManangeService;
 import org.xiaoyu.queqiao.common.message.ChatRequestMessage;
 import org.xiaoyu.queqiao.common.message.ChatResponseMessage;
-import org.xiaoyu.queqiao.common.util.SpiServiceLoadUtil;
 
 /**
  * @Description
