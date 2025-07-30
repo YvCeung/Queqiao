@@ -28,7 +28,7 @@ public class GroupCreateRequestMsgHandler extends SimpleChannelInboundHandler<Gr
         IGroupSessionManageService groupSessionManageService =
                 GroupSessionManageServiceFactory.getGroupSessionManageService("GroupSessionManageMemoryImpl");
         ChatGroup chatGroup = groupSessionManageService.createGroup(groupName, members);
-        if (chatGroup != null) {
+        if (chatGroup == null) {
             // 发生成功消息
             ctx.writeAndFlush(new GroupCreateResponseMessage(true, groupName + "创建成功"));
             // 发送拉群消息
