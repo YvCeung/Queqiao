@@ -24,6 +24,7 @@ public class GroupSessionManageMemoryImpl implements IGroupSessionManageService 
 
     @Override
     public ChatGroup joinMember(String name, String member) {
+        // 如果 map 中 存在该 key 且对应的 value 不为 null 则执行函数式接口
         return groupMap.computeIfPresent(name, (key, value) -> {
             value.getMembers().add(member);
             return value;
