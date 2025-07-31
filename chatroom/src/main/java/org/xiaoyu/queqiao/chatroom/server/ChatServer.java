@@ -12,7 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.xiaoyu.queqiao.chatroom.protocol.CustomProtocolFrameDecoder;
 import org.xiaoyu.queqiao.chatroom.protocol.MessageCodecSharable;
 import org.xiaoyu.queqiao.chatroom.server.handler.ChatRequestMsgHandler;
+import org.xiaoyu.queqiao.chatroom.server.handler.GroupChatRequestMsgHandler;
 import org.xiaoyu.queqiao.chatroom.server.handler.GroupCreateRequestMsgHandler;
+import org.xiaoyu.queqiao.chatroom.server.handler.GroupJoinRequestMsgHandler;
+import org.xiaoyu.queqiao.chatroom.server.handler.GroupMembersRequestMsgHandler;
+import org.xiaoyu.queqiao.chatroom.server.handler.GroupQuitRequestMsgHandler;
 import org.xiaoyu.queqiao.chatroom.server.handler.LoginRequestMsgHandler;
 
 /**
@@ -27,7 +31,13 @@ public class ChatServer {
         MessageCodecSharable messageCodecSharable = new MessageCodecSharable();
         LoginRequestMsgHandler loginRequestMsgHandler = new LoginRequestMsgHandler();
         ChatRequestMsgHandler chatRequestMsgHandler = new ChatRequestMsgHandler();
+
         GroupCreateRequestMsgHandler groupCreateRequestMsgHandler = new GroupCreateRequestMsgHandler();
+        GroupJoinRequestMsgHandler groupJoinRequestMsgHandler = new GroupJoinRequestMsgHandler();
+        GroupMembersRequestMsgHandler groupMembersRequestMsgHandler = new GroupMembersRequestMsgHandler();
+        GroupQuitRequestMsgHandler groupQuitRequestMsgHandler = new GroupQuitRequestMsgHandler();
+        GroupChatRequestMsgHandler groupChatRequestMsgHandler = new GroupChatRequestMsgHandler();
+
 
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
@@ -46,6 +56,10 @@ public class ChatServer {
                            sc.pipeline().addLast(loginRequestMsgHandler);
                            sc.pipeline().addLast(chatRequestMsgHandler);
                            sc.pipeline().addLast(groupCreateRequestMsgHandler);
+                           sc.pipeline().addLast(groupJoinRequestMsgHandler);
+                           sc.pipeline().addLast(groupMembersRequestMsgHandler);
+                           sc.pipeline().addLast(groupQuitRequestMsgHandler);
+                           sc.pipeline().addLast(groupChatRequestMsgHandler);
                         }
                     });
             // Netty 是异步的，bind() 会立刻返回一个 ChannelFuture，而 sync() 的作用是阻塞当前线程，直到端口绑定成功为止。
