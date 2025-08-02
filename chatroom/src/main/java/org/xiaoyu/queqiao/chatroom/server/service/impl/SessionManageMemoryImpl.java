@@ -27,7 +27,9 @@ public class SessionManageMemoryImpl implements ISessionManangeService {
 
     @Override
     public void unbind(Channel channel) {
-
+        String username = channelUsernameMap.remove(channel);
+        usernameChannelMap.remove(username);
+        channelAttributesMap.remove(channel);
     }
 
     @Override

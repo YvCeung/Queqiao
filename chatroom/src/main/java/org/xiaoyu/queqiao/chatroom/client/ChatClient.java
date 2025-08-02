@@ -134,6 +134,7 @@ public class ChatClient {
                                             ctx.writeAndFlush(new GroupQuitRequestMessage(username, s[1]));
                                             break;
                                         case "quit":
+                                            // 产生正常的退出事件
                                             ctx.channel().close();
                                             return;
                                     }
