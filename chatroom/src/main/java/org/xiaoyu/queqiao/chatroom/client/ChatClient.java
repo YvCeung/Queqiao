@@ -2,6 +2,7 @@ package org.xiaoyu.queqiao.chatroom.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
@@ -10,6 +11,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.xiaoyu.queqiao.chatroom.protocol.CustomProtocolFrameDecoder;
 import org.xiaoyu.queqiao.chatroom.protocol.MessageCodecSharable;
@@ -22,6 +26,7 @@ import org.xiaoyu.queqiao.common.message.GroupMembersRequestMessage;
 import org.xiaoyu.queqiao.common.message.GroupQuitRequestMessage;
 import org.xiaoyu.queqiao.common.message.LoginRequestMessage;
 import org.xiaoyu.queqiao.common.message.LoginResponseMessage;
+import org.xiaoyu.queqiao.common.message.PingMessage;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -53,6 +58,18 @@ public class ChatClient {
                     ch.pipeline().addLast(new CustomProtocolFrameDecoder());
                     ch.pipeline().addLast(LOGGING_HANDLER);
                     ch.pipeline().addLast(MESSAGE_CODEC);
+                    // 3s 内如果没有向服务器写数据，会触发一个 IdleState#WRITER_IDLE 事件，这个间隔要小于服务端的读间隔
+                    ch.pipeline().addLast(new IdleStateHandler(0, 3, 0));
+                    ch.pipeline().addLast(new ChannelDuplexHandler(){
+                        @Override
+                        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                            IdleStateEvent stateEvent = (IdleStateEvent) evt;
+                            // 触发了写空闲事件
+                            if (stateEvent.state() == IdleState.WRITER_IDLE) {
+                                ctx.writeAndFlush(new PingMessage());
+                            }
+                        }
+                    });
                     ch.pipeline().addLast("client handler", new ChannelInboundHandlerAdapter() {
                         // 接收响应消息
                         @Override

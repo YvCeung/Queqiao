@@ -2,12 +2,17 @@ package org.xiaoyu.queqiao.chatroom.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.xiaoyu.queqiao.chatroom.protocol.CustomProtocolFrameDecoder;
 import org.xiaoyu.queqiao.chatroom.protocol.MessageCodecSharable;
@@ -53,17 +58,33 @@ public class ChatServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel sc) throws Exception {
-                           sc.pipeline().addLast(new CustomProtocolFrameDecoder());
-                           sc.pipeline().addLast(loggingHandler);
-                           sc.pipeline().addLast(messageCodecSharable);
-                           sc.pipeline().addLast(loginRequestMsgHandler);
-                           sc.pipeline().addLast(chatRequestMsgHandler);
-                           sc.pipeline().addLast(groupCreateRequestMsgHandler);
-                           sc.pipeline().addLast(groupJoinRequestMsgHandler);
-                           sc.pipeline().addLast(groupMembersRequestMsgHandler);
-                           sc.pipeline().addLast(groupQuitRequestMsgHandler);
-                           sc.pipeline().addLast(groupChatRequestMsgHandler);
-                           sc.pipeline().addLast(quitHandler);
+                            sc.pipeline().addLast(new CustomProtocolFrameDecoder());
+                            sc.pipeline().addLast(loggingHandler);
+                            sc.pipeline().addLast(messageCodecSharable);
+                            // 用来判断是不是 读空闲时间过长，或 写空闲时间过长
+                            // 5s 内如果没有收到 channel 的数据，会触发一个 IdleState#READER_IDLE 事件
+                            sc.pipeline().addLast(new IdleStateHandler(5, 0, 0));
+                            // ChannelDuplexHandler 可以同时作为入站和出站处理器
+                            sc.pipeline().addLast(new ChannelDuplexHandler() {
+                                // userEventTriggered 用来处理特殊事件，比如用户自定义产生的
+                                @Override
+                                public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                                    IdleStateEvent event = (IdleStateEvent) evt;
+                                    // 触发了读空闲事件
+                                    if (event.state() == IdleState.READER_IDLE) {
+                                        log.debug("已经 5s 没有读到数据了");
+                                        ctx.channel().close();
+                                    }
+                                }
+                            });
+                            sc.pipeline().addLast(loginRequestMsgHandler);
+                            sc.pipeline().addLast(chatRequestMsgHandler);
+                            sc.pipeline().addLast(groupCreateRequestMsgHandler);
+                            sc.pipeline().addLast(groupJoinRequestMsgHandler);
+                            sc.pipeline().addLast(groupMembersRequestMsgHandler);
+                            sc.pipeline().addLast(groupQuitRequestMsgHandler);
+                            sc.pipeline().addLast(groupChatRequestMsgHandler);
+                            sc.pipeline().addLast(quitHandler);
                         }
                     });
             // Netty 是异步的，bind() 会立刻返回一个 ChannelFuture，而 sync() 的作用是阻塞当前线程，直到端口绑定成功为止。
