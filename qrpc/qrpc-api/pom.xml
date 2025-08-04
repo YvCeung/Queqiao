@@ -3,20 +3,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.xiaoyu</groupId>
-        <artifactId>Queqiao</artifactId>
+        <artifactId>qrpc</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.xiaoyu</groupId>
-    <artifactId>qrpc</artifactId>
-    <packaging>pom</packaging>
+    <groupId>org.example</groupId>
+    <artifactId>qrpc-api</artifactId>
+    <packaging>jar</packaging>
 
-    <modules>
-        <module>qrpc-core</module>
-        <module>qrpc-api</module>
-    </modules>
+    <name>qrpc-api</name>
+    <url>http://maven.apache.org</url>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+
+    <dependencies>
+    </dependencies>
 </project>
