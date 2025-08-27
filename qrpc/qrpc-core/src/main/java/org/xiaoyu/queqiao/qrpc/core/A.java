@@ -6,4 +6,7 @@ package org.xiaoyu.queqiao.qrpc.core;
  * @create: 2025-08-07 14:35
  **/
 public class A {
+    public static void main(String[] args) {
+
+    }
 }
