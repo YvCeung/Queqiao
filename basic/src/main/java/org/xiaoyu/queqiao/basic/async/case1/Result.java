@@ -1,4 +1,4 @@
-package org.xiaoyu.queqiao.basic.async;
+package org.xiaoyu.queqiao.basic.async.case1;
 
 import lombok.Data;
 
